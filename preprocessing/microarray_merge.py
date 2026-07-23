@@ -6,10 +6,11 @@ df = pd.read_csv(
     file_path,
     sep="\t",
 )
-platemap_df = pd.read_excel("Microarray Data/Metadata/Manhattan RecombiChip v2 platemap.xlsx", )
+platemap_df = pd.read_excel(
+    "Microarray Data/Metadata/Manhattan RecombiChip v2 platemap.xlsx", )
 
 merged_df = df.merge(
-    platemap_df[['ID', 'Location in box']], 
-    on='ID', 
+    platemap_df[['ID', 'Location in box']],
+    on='ID',
     how='left'
 )

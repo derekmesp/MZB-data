@@ -1,5 +1,5 @@
-import pandas as pd 
-import numpy as np 
+import pandas as pd
+import numpy as np
 
 df = pd.read_excel(
     "preprocessing/Liquid Nitrogen Storage.xlsx",
@@ -22,5 +22,6 @@ df[cols] = (
 
 df['Age(y): 45(+/-20)'] = pd.to_numeric(df['Age(y): 45(+/-20)'], errors='coerce')
 filtered = df[(df[cols] > 0).sum(axis=1) == 3]
-filtered = filtered[(filtered['Age(y): 45(+/-20)'] > 20) & (filtered['Age(y): 45(+/-20)'] < 50)]
+filtered = filtered[(filtered['Age(y): 45(+/-20)'] > 20) &
+                    (filtered['Age(y): 45(+/-20)'] < 50)]
 print(filtered.Donor.unique())

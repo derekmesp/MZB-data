@@ -1,8 +1,9 @@
-import flowkit as fk 
+import flowkit as fk
 import pandas as pd
 import scanpy as sc
 import matplotlib.pyplot as plt
-import re 
+import re
+
 
 def read_flow(directory):
     """
@@ -31,29 +32,31 @@ def read_flow(directory):
 
     session = fk.Session(fcs_samples=directory)
     sample_list = session.get_sample_ids()
-    
+
     df_flow = []
     for sample_id in sample_list:
         df = session.get_gate_events(sample_id)
         df['sample_id'] = (sample_id.split(' ')[1])
         df['tissue'] = (sample_id.split(' ')[2])
         df_flow.append(df)
-        
+
     df_flow = pd.concat(df_flow)
-    df_flow.columns = [pns if pns != '' else pnn for pnn, pns in df_flow.columns]
+    df_flow.columns = [pns if pns !=
+                       '' else pnn for pnn, pns in df_flow.columns]
 
     new_cols = []
     for col in df_flow.columns:
-            if ' : ' in col:
-                marker = col.split(' ')[0]
-                new_cols.append(marker)
-            else:
-                new_cols.append(col)
+        if ' : ' in col:
+            marker = col.split(' ')[0]
+            new_cols.append(marker)
+        else:
+            new_cols.append(col)
 
     df_flow.columns = new_cols
 
     print('Parameters:', df_flow.keys())
     return df_flow, sample_list
+
 
 def pd_to_adata(df_flow, df_flow_counts):
     """
@@ -83,9 +86,9 @@ def pd_to_adata(df_flow, df_flow_counts):
     if df_flow.isna().any().any():
         nan_cols = df_flow.columns[df_flow.isna().any()].tolist()
         raise ValueError(
-        f"NaN values detected in df_flow columns: {nan_cols}"
+            f"NaN values detected in df_flow columns: {nan_cols}"
         )
-        
+
     df_flow['sample_id'] = df_flow['sample_id'].apply(lambda x: x[:4])
     list_metadata = {
         'sample_id': df_flow.sample_id,
@@ -98,5 +101,5 @@ def pd_to_adata(df_flow, df_flow_counts):
 
     for col in df_metadata.columns:
         adata.obs[col] = df_metadata[col]
-    
+
     return adata
